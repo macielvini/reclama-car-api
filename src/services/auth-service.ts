@@ -18,7 +18,7 @@ async function signIn(data: SignInParams) {
 
   const token = await createSession(user.id);
 
-  return token;
+  return { userId: user.id, token };
 }
 
 async function createSession(userId: string) {
