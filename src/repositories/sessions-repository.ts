@@ -10,7 +10,7 @@ async function create(data: SessionParams) {
 }
 
 async function findToken(token: string) {
-  return await prisma.session.findFirst({ where: { token } });
+  return await prisma.session.findFirst({ where: { token: token } });
 }
 
 export const sessionRepository = { create, findToken };
