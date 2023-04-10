@@ -3,6 +3,7 @@ import { loadEnvs } from "./config/envs";
 import cors from "cors";
 import { userRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
+import { manufactureRouter } from "./routers/manufactures-router";
 
 loadEnvs();
 
@@ -13,6 +14,7 @@ app
   .use(express.json())
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
   .use("/users", userRouter)
-  .use("/auth", authRouter);
+  .use("/auth", authRouter)
+  .use("/manufactures", manufactureRouter);
 
 export default app;
