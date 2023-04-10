@@ -47,6 +47,22 @@ model Manufacture {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   name      String   @unique
   image     String
+  Car       Car[]
 
   @@map("manufactures")
+}
+
+model Car {
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
+  image         String
+  model         String
+  engineSize    String
+  year          Int
+  fuelType      String
+  manufacture   Manufacture @relation(fields: [manufactureId], references: [id])
+  manufactureId String      @map("manufacture_id")
+
+  @@map("cars")
 }
