@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { loadEnvs } from "./config/envs";
 import cors from "cors";
 import { userRouter } from "./routers/users-router";
+import { authRouter } from "./routers/auth-router";
 
 loadEnvs();
 
@@ -11,6 +12,7 @@ app
   .use(cors())
   .use(express.json())
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
-  .use("/users/", userRouter);
+  .use("/users", userRouter)
+  .use("/auth", authRouter);
 
 export default app;
