@@ -78,11 +78,11 @@ model Review {
   updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at")
   title         String
   text          String
-  maintenance   Int             @default(0)
-  drivability   Int             @default(0)
-  comfort       Int             @default(0)
-  consumption   Int             @default(0)
-  general       Int             @default(0)
+  maintenance   Int?
+  drivability   Int?
+  comfort       Int?
+  consumption   Int?
+  general       Int?
   user          User            @relation(fields: [userId], references: [id])
   userId        String          @map("user_id")
   car           Car             @relation(fields: [carId], references: [id])
