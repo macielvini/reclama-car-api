@@ -4,6 +4,7 @@ import cors from "cors";
 import { userRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { manufactureRouter } from "./routers/manufactures-router";
+import { carsRouter } from "./routers/cars-router";
 
 loadEnvs();
 
@@ -15,6 +16,7 @@ app
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
   .use("/users", userRouter)
   .use("/auth", authRouter)
-  .use("/manufactures", manufactureRouter);
+  .use("/manufactures", manufactureRouter)
+  .use("/cars", carsRouter);
 
 export default app;
