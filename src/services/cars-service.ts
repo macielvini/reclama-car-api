@@ -1,3 +1,4 @@
+import { notFoundError } from "../errors/not-found-error";
 import { carsRepository } from "../repositories/cars-repository";
 
 async function findAll() {
@@ -5,7 +6,9 @@ async function findAll() {
 }
 
 async function findById(id: string) {
-  return await carsRepository.findById(id);
+  const car = await carsRepository.findById(id);
+  if (!car) throw notFoundError("car");
+  return car;
 }
 
 async function findByManufactureId(id: string) {
