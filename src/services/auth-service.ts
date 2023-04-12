@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { credentialError } from "../errors/credential-error";
 import { sessionRepository } from "../repositories/sessions-repository";
 import { userRepository } from "../repositories/users-repository";
+import { roleError } from "../errors/role-error";
 
 export type SignInParams = {
   email: string;
@@ -42,4 +43,9 @@ async function validatePassword(password: string, userPassword: string) {
   if (!validaPassword) throw credentialError();
 }
 
-export const authService = { signIn };
+async function validateAdmin(userId: string) {
+  const user = await userRepository.findById(userId);
+  if (user.role !== "ADMIN") throw roleError();
+}
+
+export const authService = { signIn, validateAdmin };
