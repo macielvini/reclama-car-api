@@ -29,13 +29,19 @@ async function create(userId: string, { tags, ...data }: CreateReviewParams) {
 }
 
 async function findAll() {
-  return await prisma.review.findMany({
+  const data = await prisma.review.findMany({
     include: {
       _count: { select: { Reaction: true } },
       car: { include: { manufacture: true } },
-      TagsOnReviews: { include: { tag: true } },
+      TagsOnReviews: { select: { tag: true } },
     },
   });
+
+  return data.map(({ TagsOnReviews, _count, ...rest }) => ({
+    ...rest,
+    tags: TagsOnReviews,
+    reactions: _count.Reaction,
+  }));
 }
 
 async function findTrending(take: number) {

@@ -14,3 +14,13 @@ export async function createReview(req: Request, res: Response) {
     errorHandler(req, res, error);
   }
 }
+
+export async function findReviews(req: Request, res: Response) {
+  const userId = "trial";
+  try {
+    const data = await reviewsService.findAll();
+    res.send(data);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+}

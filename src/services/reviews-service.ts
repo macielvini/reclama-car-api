@@ -12,4 +12,8 @@ async function create(userId: string, data: CreateReviewParams) {
   return await reviewsRepository.create(userId, data);
 }
 
-export const reviewsService = { create };
+async function findAll() {
+  return await reviewsRepository.findAll();
+}
+
+export const reviewsService = { create, findAll };
