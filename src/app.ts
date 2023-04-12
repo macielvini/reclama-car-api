@@ -5,6 +5,7 @@ import { userRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { manufactureRouter } from "./routers/manufactures-router";
 import { carsRouter } from "./routers/cars-router";
+import { reviewsRouter } from "./routers/reviews-router";
 
 loadEnvs();
 
@@ -17,6 +18,7 @@ app
   .use("/users", userRouter)
   .use("/auth", authRouter)
   .use("/manufactures", manufactureRouter)
-  .use("/cars", carsRouter);
+  .use("/cars", carsRouter)
+  .use("/reviews", reviewsRouter);
 
 export default app;
