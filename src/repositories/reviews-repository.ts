@@ -1,4 +1,4 @@
-import { Review } from "@prisma/client";
+import { Car, Manufacture, Review, Tag } from "@prisma/client";
 import { prisma } from "../config/database";
 import dayjs from "dayjs";
 
@@ -37,11 +37,7 @@ async function findAll() {
     },
   });
 
-  return data.map(({ TagsOnReviews, _count, ...rest }) => ({
-    ...rest,
-    tags: TagsOnReviews,
-    reactions: _count.Reaction,
-  }));
+  return reviewsSanitizer(data);
 }
 
 async function findTrending(take: number) {
@@ -63,6 +59,25 @@ async function findTopReactions() {
     include: { _count: { select: { Reaction: true } } },
     orderBy: { Reaction: { _count: "desc" } },
   });
+}
+
+type FullReview = Review & {
+  car: Car & {
+    manufacture: Manufacture;
+  };
+  TagsOnReviews: {
+    tag: Tag;
+  }[];
+  _count: {
+    Reaction: number;
+  };
+};
+function reviewsSanitizer(reviews: FullReview[]) {
+  return reviews.map(({ TagsOnReviews, _count, ...rest }) => ({
+    ...rest,
+    tags: TagsOnReviews,
+    reactions: _count.Reaction,
+  }));
 }
 
 export const reviewsRepository = {

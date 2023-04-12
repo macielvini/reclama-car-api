@@ -31,7 +31,7 @@ export async function authenticateAdmin(
 }
 
 function generateUnauthorizedResponse(res: Response) {
-  res.status(httpStatus.UNAUTHORIZED).send("token");
+  res.sendStatus(httpStatus.UNAUTHORIZED);
 }
 
 export type AdminRequest = Request & JWTPayload;
