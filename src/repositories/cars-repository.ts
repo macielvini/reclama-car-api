@@ -28,6 +28,13 @@ async function findByYear(year: number) {
   });
 }
 
+async function findYearsByManufactureId(id: string) {
+  return await prisma.car.findMany({
+    where: { manufactureId: id },
+    select: { id: true, year: true },
+  });
+}
+
 export type CreateCarsParams = Omit<Car, "id" | "createdAt" | "updatedAt">;
 async function create(data: CreateCarsParams) {
   return prisma.car.create({
@@ -40,5 +47,6 @@ export const carsRepository = {
   findById,
   findByManufactureId,
   findByYear,
+  findYearsByManufactureId,
   create,
 };

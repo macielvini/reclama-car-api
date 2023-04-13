@@ -40,3 +40,16 @@ export async function findCarsByManufactureId(req: Request, res: Response) {
     errorHandler(req, res, error);
   }
 }
+export async function findCarsYearsByManufactureId(
+  req: Request,
+  res: Response
+) {
+  const id: string = req.params.id;
+
+  try {
+    const data = await carsService.findYearsByManufactureId(id);
+    res.send(data);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+}
