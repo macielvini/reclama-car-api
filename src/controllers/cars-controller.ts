@@ -32,14 +32,22 @@ export async function findCarById(req: Request, res: Response) {
 
 export async function findCarsByManufactureId(req: Request, res: Response) {
   const id: string = req.params.id;
+  const year = parseInt(req.query.year as string);
 
   try {
-    const data = await carsService.findByManufactureId(id);
+    let data;
+    if (year) {
+      data = await carsService.findByManufactureIdAndYear(id, year);
+    } else {
+      data = await carsService.findByManufactureId(id);
+    }
+
     res.send(data);
   } catch (error) {
     errorHandler(req, res, error);
   }
 }
+
 export async function findCarsYearsByManufactureId(
   req: Request,
   res: Response

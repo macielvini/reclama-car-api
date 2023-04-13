@@ -20,10 +20,15 @@ async function findYearsByManufactureId(id: string) {
   return await carsRepository.findYearsByManufactureId(id);
 }
 
+async function findByManufactureIdAndYear(id: string, year: number) {
+  return await carsRepository.findByManufactureIdAndYear(id, year);
+}
+
 export const carsService = {
   findAll,
   findById,
   findByManufactureId,
   findByYear,
   findYearsByManufactureId,
+  findByManufactureIdAndYear,
 };

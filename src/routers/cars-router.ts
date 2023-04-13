@@ -12,6 +12,6 @@ carsRouter
   .get("/", findAllCars)
   .get("/:id", findCarById)
   .get("/manufacture/:id", findCarsByManufactureId)
-  .get("/manufacture/:id/years", findCarsYearsByManufactureId);
+  .get("/manufacture/:id/year", findCarsYearsByManufactureId);
 
 export { carsRouter };
