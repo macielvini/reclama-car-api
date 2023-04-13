@@ -1,4 +1,4 @@
-import { Car, Manufacture, Review, Tag } from "@prisma/client";
+import { Car, Manufacture, Review, Tag, Reaction } from "@prisma/client";
 import { prisma } from "../config/database";
 import dayjs from "dayjs";
 
@@ -40,18 +40,33 @@ async function findAll() {
   return reviewsSanitizer(data);
 }
 
-async function findTrending(take: number) {
+async function findTrending(take: number, skip: number, userId?: string) {
   const last30days = dayjs().subtract(30, "d").toDate();
   const last15days = dayjs().subtract(15, "d").toDate();
 
-  return prisma.review.findMany({
+  if (userId === undefined) userId = "";
+  console.log(userId);
+
+  const data = await prisma.review.findMany({
     where: {
       createdAt: { gte: last30days },
-      AND: { Reaction: { some: { createdAt: last15days } } },
+      AND: { Reaction: { some: { createdAt: { gte: last15days } } } },
+    },
+    include: {
+      _count: { select: { Reaction: true } },
+      car: { include: { manufacture: true } },
+      TagsOnReviews: { select: { tag: true } },
+      Reaction: {
+        where: { user: { id: { equals: userId } } },
+        take: 1,
+      },
     },
     orderBy: { Reaction: { _count: "desc" } },
     take: take,
+    skip: skip,
   });
+
+  return reviewsSanitizer(data);
 }
 
 async function findTopReactions() {
@@ -71,12 +86,16 @@ type FullReview = Review & {
   _count: {
     Reaction: number;
   };
+  Reaction?: Reaction[];
 };
 function reviewsSanitizer(reviews: FullReview[]) {
-  return reviews.map(({ TagsOnReviews, _count, ...rest }) => ({
+  return reviews.map(({ TagsOnReviews, _count, Reaction, ...rest }) => ({
     ...rest,
     tags: TagsOnReviews,
-    reactions: _count.Reaction,
+    reactions: {
+      count: _count.Reaction,
+      reacted: Array.isArray(Reaction) && Reaction.length > 0,
+    },
   }));
 }
 

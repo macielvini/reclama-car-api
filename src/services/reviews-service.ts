@@ -16,4 +16,8 @@ async function findAll() {
   return await reviewsRepository.findAll();
 }
 
-export const reviewsService = { create, findAll };
+async function findTrending(take: number, skip: number, userId?: string) {
+  return await reviewsRepository.findTrending(take, skip, userId);
+}
+
+export const reviewsService = { create, findAll, findTrending };
