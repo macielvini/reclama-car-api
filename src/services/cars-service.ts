@@ -19,9 +19,16 @@ async function findByYear(year: number) {
   return await carsRepository.findByYear(year);
 }
 
+async function validateCarId(id: string) {
+  const data = await carsRepository.findById(id);
+  if (!data) throw notFoundError("car");
+  return data;
+}
+
 export const carsService = {
   findAll,
   findById,
   findByManufactureId,
   findByYear,
+  validateCarId,
 };
