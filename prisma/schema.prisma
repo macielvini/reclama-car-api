@@ -85,7 +85,7 @@ model Rating {
   car         Car      @relation(fields: [carId], references: [id])
   carId       String   @map("car_id")
   review      Review   @relation(fields: [reviewId], references: [id])
-  reviewId    String   @map("review_id")
+  reviewId    String   @unique @map("review_id")
 }
 
 model Review {
@@ -100,7 +100,7 @@ model Review {
   carId         String          @map("car_id")
   TagsOnReviews TagsOnReviews[]
   Reaction      Reaction[]
-  Rating        Rating[]
+  Rating        Rating?
 
   @@map("reviews")
 }
