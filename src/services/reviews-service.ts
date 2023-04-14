@@ -37,10 +37,17 @@ async function findByUserIdAndCarId(userId: string, carId: string) {
   return data;
 }
 
+async function validateById(id: string) {
+  const data = await reviewsRepository.findById(id);
+  if (!data) throw notFoundError("review");
+  return data;
+}
+
 export const reviewsService = {
   create,
   findAll,
   findTrending,
   findAllByUserId,
   findByUserIdAndCarId,
+  validateById,
 };

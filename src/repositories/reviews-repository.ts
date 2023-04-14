@@ -40,6 +40,12 @@ async function findAll() {
   return reviewsSanitizer(data);
 }
 
+async function findById(id: string) {
+  return await prisma.review.findUnique({
+    where: { id: id },
+  });
+}
+
 async function findAllByUserId(id: string) {
   const data = await prisma.review.findMany({
     where: {
@@ -162,4 +168,5 @@ export const reviewsRepository = {
   findTopReactions,
   findAllByUserId,
   findByUserIdAndCarId,
+  findById,
 };
