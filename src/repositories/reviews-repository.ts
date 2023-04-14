@@ -1,18 +1,36 @@
-import { Car, Manufacture, Review, Tag, Reaction } from "@prisma/client";
+import {
+  Car,
+  Manufacture,
+  Review,
+  Tag,
+  Reaction,
+  Rating,
+} from "@prisma/client";
 import { prisma } from "../config/database";
 import dayjs from "dayjs";
 
 export type CreateReviewParams = Omit<
   Review,
-  "id" | "createdAt" | "updatedAt" | "userId"
-> & { tags?: string[] };
+  "id" | "createdAt" | "updatedAt" | "userId" | "ratingId"
+> & { tags?: string[] } & {
+  rating?: {
+    maintenance: number;
+    drivability: number;
+    comfort: number;
+    consumption: number;
+    general: number;
+  };
+};
 
-async function create(userId: string, { tags, ...data }: CreateReviewParams) {
+async function create(
+  userId: string,
+  { tags, rating, ...data }: CreateReviewParams
+) {
   if (tags) {
     return prisma.review.create({
       data: {
-        userId: userId,
         ...data,
+        userId: userId,
         TagsOnReviews: {
           createMany: { data: [...tags.map((tag) => ({ tagId: tag }))] },
         },
@@ -23,6 +41,7 @@ async function create(userId: string, { tags, ...data }: CreateReviewParams) {
   return prisma.review.create({
     data: {
       userId: userId,
+      Rating: { create: { ...rating, car: { connect: { id: data.carId } } } },
       ...data,
     },
   });
@@ -149,6 +168,7 @@ type FullReview = Review & {
     Reaction: number;
   };
   Reaction?: Reaction[];
+  Rating?: Rating;
 };
 function reviewsSanitizer(reviews: FullReview[]) {
   return reviews.map(({ TagsOnReviews, _count, Reaction, ...rest }) => ({
