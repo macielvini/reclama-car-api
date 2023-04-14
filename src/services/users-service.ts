@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { duplicatedEmailError } from "../errors/duplicate-email-error";
 import { userRepository, UserParams } from "../repositories/users-repository";
+import { notFoundError } from "../errors/not-found-error";
 
 async function create(data: UserParams) {
   await validateUniqueEmail(data.email);
@@ -15,4 +16,10 @@ async function validateUniqueEmail(email: string) {
   if (emailExists) throw duplicatedEmailError();
 }
 
-export const userService = { create };
+async function validateUserId(id: string) {
+  const user = await userRepository.findById(id);
+  if (!user) throw notFoundError("user");
+  return user;
+}
+
+export const userService = { create, validateUserId };
