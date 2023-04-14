@@ -53,6 +53,15 @@ async function findAll() {
       _count: { select: { Reaction: true } },
       car: { include: { manufacture: true } },
       TagsOnReviews: { select: { tag: true } },
+      Rating: {
+        select: {
+          maintenance: true,
+          comfort: true,
+          drivability: true,
+          consumption: true,
+          general: true,
+        },
+      },
     },
   });
 
@@ -78,6 +87,15 @@ async function findAllByUserId(id: string) {
         where: { user: { id: { equals: id } } },
         take: 1,
       },
+      Rating: {
+        select: {
+          maintenance: true,
+          comfort: true,
+          drivability: true,
+          consumption: true,
+          general: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
@@ -100,6 +118,15 @@ async function findByUserIdAndCarId(userId: string, carId: string) {
       Reaction: {
         where: { user: { id: { equals: userId } } },
         take: 1,
+      },
+      Rating: {
+        select: {
+          maintenance: true,
+          comfort: true,
+          drivability: true,
+          consumption: true,
+          general: true,
+        },
       },
     },
     orderBy: {
@@ -141,6 +168,15 @@ async function findTrending(take: number, skip: number, userId?: string) {
         where: { user: { id: { equals: userId } } },
         take: 1,
       },
+      Rating: {
+        select: {
+          maintenance: true,
+          comfort: true,
+          drivability: true,
+          consumption: true,
+          general: true,
+        },
+      },
     },
     orderBy: { Reaction: { _count: "desc" } },
     take: take,
@@ -168,7 +204,10 @@ type FullReview = Review & {
     Reaction: number;
   };
   Reaction?: Reaction[];
-  Rating?: Rating;
+  Rating?: Pick<
+    Rating,
+    "comfort" | "consumption" | "drivability" | "general" | "maintenance"
+  >;
 };
 function reviewsSanitizer(reviews: FullReview[]) {
   return reviews.map(({ TagsOnReviews, _count, Reaction, ...rest }) => ({
