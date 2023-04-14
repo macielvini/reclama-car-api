@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   createReview,
   findAllReviews,
-  findAllReviewsByUserId,
+  findReviewByUserIdAndCarId,
   findTrendingReviews,
 } from "../controllers/reviews-controller";
 import { validateBody } from "../middlewares/schema-validation-middleware";
@@ -16,6 +16,7 @@ reviewsRouter
   .post("/", validateBody(reviewSchema), authenticateToken, createReview)
   .get("/", authenticateAdmin, findAllReviews)
   .get("/trending", findTrendingReviews)
-  .get("/:userId", findAllReviews);
+  .get("/user/:userId", findAllReviews)
+  .get("/car/:carId/", authenticateToken, findReviewByUserIdAndCarId);
 
 export { reviewsRouter };

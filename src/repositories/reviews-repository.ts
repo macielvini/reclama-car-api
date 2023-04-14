@@ -62,6 +62,40 @@ async function findAllByUserId(id: string) {
   return reviewsSanitizer(data);
 }
 
+async function findByUserIdAndCarId(userId: string, carId: string) {
+  const data = await prisma.review.findFirst({
+    where: {
+      userId: userId,
+      car: { id: carId },
+    },
+    include: {
+      _count: { select: { Reaction: true } },
+      car: { include: { manufacture: true } },
+      TagsOnReviews: { select: { tag: true } },
+      Reaction: {
+        where: { user: { id: { equals: userId } } },
+        take: 1,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const tagsAndReactions = {
+    tags: [...data.TagsOnReviews],
+    reactions: {
+      count: data._count.Reaction,
+      reacted: Array.isArray(data.Reaction) && data.Reaction.length > 0,
+    },
+  };
+
+  delete data.Reaction;
+  delete data.TagsOnReviews;
+  delete data._count;
+  return { ...data, ...tagsAndReactions };
+}
+
 async function findTrending(take: number, skip: number, userId?: string) {
   const last30days = dayjs().subtract(30, "d").toDate();
   const last15days = dayjs().subtract(15, "d").toDate();
@@ -127,4 +161,5 @@ export const reviewsRepository = {
   findTrending,
   findTopReactions,
   findAllByUserId,
+  findByUserIdAndCarId,
 };

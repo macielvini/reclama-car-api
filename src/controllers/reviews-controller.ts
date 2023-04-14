@@ -32,13 +32,14 @@ export async function findAllReviews(req: Request, res: Response) {
   }
 }
 
-export async function findAllReviewsByUserId(
+export async function findReviewByUserIdAndCarId(
   req: AuthenticatedRequest,
   res: Response
 ) {
   const userId = req.userId;
+  const carId = req.params.carId;
   try {
-    const data = await reviewsService.findAllByUserId(userId);
+    const data = await reviewsService.findByUserIdAndCarId(userId, carId);
     res.send(data);
   } catch (error) {
     errorHandler(req, res, error);

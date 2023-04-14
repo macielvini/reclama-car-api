@@ -26,9 +26,21 @@ async function findAllByUserId(userId: string) {
   return await reviewsRepository.findAllByUserId(userId);
 }
 
+async function findByUserIdAndCarId(userId: string, carId: string) {
+  await userService.validateUserId(userId);
+  await carsService.validateCarId(carId);
+
+  const data = await reviewsRepository.findByUserIdAndCarId(userId, carId);
+
+  if (!data) throw notFoundError("review");
+
+  return data;
+}
+
 export const reviewsService = {
   create,
   findAll,
   findTrending,
   findAllByUserId,
+  findByUserIdAndCarId,
 };
