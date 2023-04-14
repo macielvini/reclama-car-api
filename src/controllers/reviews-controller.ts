@@ -17,8 +17,28 @@ export async function createReview(req: Request, res: Response) {
 }
 
 export async function findAllReviews(req: Request, res: Response) {
+  const userId = req.params.userId;
   try {
-    const data = await reviewsService.findAll();
+    let data;
+    if (userId) {
+      data = await reviewsService.findAllByUserId(userId);
+    } else {
+      data = await reviewsService.findAll();
+    }
+
+    res.send(data);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+}
+
+export async function findAllReviewsByUserId(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  const userId = req.userId;
+  try {
+    const data = await reviewsService.findAllByUserId(userId);
     res.send(data);
   } catch (error) {
     errorHandler(req, res, error);

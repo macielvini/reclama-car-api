@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createReview,
   findAllReviews,
+  findAllReviewsByUserId,
   findTrendingReviews,
 } from "../controllers/reviews-controller";
 import { validateBody } from "../middlewares/schema-validation-middleware";
@@ -14,6 +15,7 @@ const reviewsRouter = Router();
 reviewsRouter
   .post("/", validateBody(reviewSchema), authenticateToken, createReview)
   .get("/", authenticateAdmin, findAllReviews)
-  .get("/trending", findTrendingReviews);
+  .get("/trending", findTrendingReviews)
+  .get("/:userId", findAllReviews);
 
 export { reviewsRouter };

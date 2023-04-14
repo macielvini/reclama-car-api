@@ -4,6 +4,7 @@ import {
   reviewsRepository,
 } from "../repositories/reviews-repository";
 import { carsService } from "./cars-service";
+import { userService } from "./users-service";
 
 async function create(userId: string, data: CreateReviewParams) {
   const car = carsService.findById(data.carId);
@@ -20,4 +21,14 @@ async function findTrending(take: number, skip: number, userId?: string) {
   return await reviewsRepository.findTrending(take, skip, userId);
 }
 
-export const reviewsService = { create, findAll, findTrending };
+async function findAllByUserId(userId: string) {
+  await userService.validateUserId(userId);
+  return await reviewsRepository.findAllByUserId(userId);
+}
+
+export const reviewsService = {
+  create,
+  findAll,
+  findTrending,
+  findAllByUserId,
+};

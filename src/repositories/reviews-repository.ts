@@ -40,6 +40,28 @@ async function findAll() {
   return reviewsSanitizer(data);
 }
 
+async function findAllByUserId(id: string) {
+  const data = await prisma.review.findMany({
+    where: {
+      userId: id,
+    },
+    include: {
+      _count: { select: { Reaction: true } },
+      car: { include: { manufacture: true } },
+      TagsOnReviews: { select: { tag: true } },
+      Reaction: {
+        where: { user: { id: { equals: id } } },
+        take: 1,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return reviewsSanitizer(data);
+}
+
 async function findTrending(take: number, skip: number, userId?: string) {
   const last30days = dayjs().subtract(30, "d").toDate();
   const last15days = dayjs().subtract(15, "d").toDate();
@@ -104,4 +126,5 @@ export const reviewsRepository = {
   findAll,
   findTrending,
   findTopReactions,
+  findAllByUserId,
 };
