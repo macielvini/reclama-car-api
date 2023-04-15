@@ -19,15 +19,17 @@ enum Role {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String     @unique
   image     String
   password  String
-  role      Role      @default(USER) @map("role")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  role      Role       @default(USER) @map("role")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
   Session   Session[]
+  Review    Review[]
+  Reaction  Reaction[]
 
   @@map("users")
 }
@@ -39,6 +41,8 @@ model Session {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @map("user_id")
+
+  @@map("sessions")
 }
 
 model Manufacture {
@@ -63,6 +67,76 @@ model Car {
   fuelType      String
   manufacture   Manufacture @relation(fields: [manufactureId], references: [id])
   manufactureId String      @map("manufacture_id")
+  Review        Review[]
+  Rating        Rating[]
 
   @@map("cars")
+}
+
+model Rating {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  maintenance Int
+  drivability Int
+  comfort     Int
+  consumption Int
+  general     Int
+  car         Car      @relation(fields: [carId], references: [id])
+  carId       String   @map("car_id")
+  review      Review   @relation(fields: [reviewId], references: [id])
+  reviewId    String   @unique @map("review_id")
+}
+
+model Review {
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at")
+  title         String
+  text          String
+  user          User            @relation(fields: [userId], references: [id])
+  userId        String          @map("user_id")
+  car           Car             @relation(fields: [carId], references: [id])
+  carId         String          @map("car_id")
+  TagsOnReviews TagsOnReviews[]
+  Reaction      Reaction[]
+  Rating        Rating?
+
+  @@map("reviews")
+}
+
+model Reaction {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  String   @map("review_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+
+  @@map("reactions")
+}
+
+model TagsOnReviews {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  tag       Tag?     @relation(fields: [tagId], references: [id])
+  tagId     String?  @map("tag_id")
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  String   @map("review_id")
+
+  @@index([tagId, reviewId])
+  @@map("tags_on_reviews")
+}
+
+model Tag {
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at")
+  name          String
+  color         String
+  TagsOnReviews TagsOnReviews[]
+
+  @@map("tags")
 }

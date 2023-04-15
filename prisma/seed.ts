@@ -1,4 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -6,6 +8,9 @@ export async function cleanDb() {
   await Promise.all([
     prisma.session.deleteMany(),
     prisma.user.deleteMany(),
+    prisma.tagsOnReviews.deleteMany(),
+    prisma.tag.deleteMany(),
+    prisma.review.deleteMany(),
     prisma.car.deleteMany(),
     prisma.manufacture.deleteMany(),
   ]);
@@ -21,6 +26,7 @@ async function main() {
       name: "GM - Chevrolet",
     },
   });
+
   const fiat = await prisma.manufacture.create({
     data: {
       image:
@@ -51,6 +57,38 @@ async function main() {
       year: 2022,
       manufactureId: fiat.id,
     },
+  });
+
+  const tags = await prisma.tag.createMany({
+    data: [
+      { color: "#3ED926", name: "recomendação" },
+      { color: "#FD5824", name: "reclamação" },
+      { color: "#24BCFD", name: "atualização" },
+    ],
+  });
+
+  const hashedPassword = await bcrypt.hash("useradmin", 10);
+  const adminUser = await prisma.user.create({
+    data: {
+      email: "user@admin.com",
+      image: faker.image.cats(500, 500),
+      name: faker.name.fullName(),
+      password: hashedPassword,
+      role: "ADMIN",
+    },
+  });
+  console.log(
+    "\x1b[1m",
+    "\x1b[32m",
+    "✔️ New admin user created successfully 🥳 ",
+    "\x1b[0m"
+  );
+  console.log({
+    name: adminUser.name,
+    email: adminUser.email,
+    image: adminUser.image,
+    password: "useradmin",
+    role: adminUser.role,
   });
 }
 

@@ -8,6 +8,7 @@ export function errorHandler(
   res: Response,
   error: ApplicationError | any
 ) {
-  if (error.status) return res.status(error.status).send(error.message);
+  if (error.status) return res.status(error.status).send(error);
+  console.log(error);
   return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
 }

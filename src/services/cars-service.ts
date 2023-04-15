@@ -1,3 +1,4 @@
+import { notFoundError } from "../errors/not-found-error";
 import { carsRepository } from "../repositories/cars-repository";
 
 async function findAll() {
@@ -5,7 +6,9 @@ async function findAll() {
 }
 
 async function findById(id: string) {
-  return await carsRepository.findById(id);
+  const car = await carsRepository.findById(id);
+  if (!car) throw notFoundError("car");
+  return car;
 }
 
 async function findByManufactureId(id: string) {
@@ -24,6 +27,12 @@ async function findByManufactureIdAndYear(id: string, year: number) {
   return await carsRepository.findByManufactureIdAndYear(id, year);
 }
 
+async function validateCarId(id: string) {
+  const data = await carsRepository.findById(id);
+  if (!data) throw notFoundError("car");
+  return data;
+}
+
 export const carsService = {
   findAll,
   findById,
@@ -31,4 +40,5 @@ export const carsService = {
   findByYear,
   findYearsByManufactureId,
   findByManufactureIdAndYear,
+  validateCarId,
 };
