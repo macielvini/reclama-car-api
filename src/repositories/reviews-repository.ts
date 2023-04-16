@@ -114,7 +114,7 @@ async function findByUserIdAndCarId(userId: string, carId: string) {
     include: {
       _count: { select: { Reaction: true } },
       car: { include: { manufacture: true } },
-      TagsOnReviews: { select: { tag: true } },
+      TagsOnReviews: { include: { tag: true } },
       Reaction: {
         where: { user: { id: { equals: userId } } },
         take: 1,
@@ -133,6 +133,8 @@ async function findByUserIdAndCarId(userId: string, carId: string) {
       createdAt: "desc",
     },
   });
+
+  if (!data) return null;
 
   const tagsAndReactions = {
     tags: [...data.TagsOnReviews],
