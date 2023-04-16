@@ -8,3 +8,11 @@ export function reviewWithoutTagsError(): ApplicationError {
     type: "reviewWithoutTagsError",
   };
 }
+
+export function tagInvalidError(): ApplicationError {
+  return {
+    status: httpStatus.UNPROCESSABLE_ENTITY,
+    message: "Invalid tag ID",
+    type: "invalidTagError",
+  };
+}
