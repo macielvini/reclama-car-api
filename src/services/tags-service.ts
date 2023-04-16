@@ -11,7 +11,6 @@ async function findById(id: string) {
 
 async function findManyByIdList(idList: string[]) {
   const data = await tagsRepository.findManyByIdList(idList);
-  if (!data) throw notFoundError("tags");
   return data;
 }
 

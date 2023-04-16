@@ -5,9 +5,9 @@ import { CreateReviewParams } from "../repositories/reviews-repository";
 import httpStatus from "http-status";
 import { AuthenticatedRequest } from "../middlewares/auth-middleware";
 
-export async function createReview(req: Request, res: Response) {
+export async function createReview(req: AuthenticatedRequest, res: Response) {
   const body = req.body as CreateReviewParams;
-  const userId = "trial";
+  const userId = req.userId;
   try {
     await reviewsService.create(userId, body);
     res.sendStatus(httpStatus.CREATED);

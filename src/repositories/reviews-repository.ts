@@ -26,7 +26,7 @@ async function create(
   userId: string,
   { tags, rating, ...data }: CreateReviewParams
 ) {
-  if (tags) {
+  if (tags.length > 0) {
     return prisma.review.create({
       data: {
         ...data,
