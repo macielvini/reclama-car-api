@@ -19,14 +19,15 @@ async function create(userId: string, data: CreateReviewParams) {
     data.carId
   );
 
-  if (lastReview && lastReview.Rating && data.rating) {
+  console.log(lastReview);
+
+  if (lastReview && !lastReview.Rating && data.rating) {
     throw ratingExistsError();
   }
 
   if (lastReview && data.tags.length < 1) throw reviewWithoutTagsError();
 
-  const tags = await tagsService.findManyByIdList(data.tags);
-  console.log("tags ", tags);
+  await tagsService.findManyByIdList(data.tags);
 
   return await reviewsRepository.create(userId, data);
 }
