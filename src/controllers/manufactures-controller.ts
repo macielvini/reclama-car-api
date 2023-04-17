@@ -19,3 +19,14 @@ export async function findAllManufactures(req: Request, res: Response) {
     errorHandler(req, res, error);
   }
 }
+
+export async function findTopManufactures(req: Request, res: Response) {
+  const take = parseInt(req.query.take as string);
+
+  try {
+    const data = await manufacturesService.findTopReviewed(take);
+    res.send(data);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+}
