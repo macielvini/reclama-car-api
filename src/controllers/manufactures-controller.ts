@@ -20,7 +20,7 @@ export async function findAllManufactures(req: Request, res: Response) {
   }
 }
 
-export async function findTopManufactures(req: Request, res: Response) {
+export async function findTopRatedManufactures(req: Request, res: Response) {
   const take = parseInt(req.query.take as string);
 
   try {

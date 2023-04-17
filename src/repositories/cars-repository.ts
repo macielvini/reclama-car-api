@@ -52,6 +52,44 @@ async function findYearsByManufactureId(id: string) {
   });
 }
 
+type CarAvgRatings = {
+  id: string;
+  model: string;
+  image: string;
+  engineSize: string;
+  year: number;
+  fuelType: string;
+  rating: {
+    general: number;
+    maintenance: number;
+    drivability: number;
+    comfort: number;
+    consumption: number;
+  };
+};
+
+async function findTopReviewed(take?: number): Promise<CarAvgRatings[]> {
+  return prisma.$queryRaw`SELECT 
+      cars.id,
+      cars.model,
+      cars.image,
+      cars."engineSize",
+      cars.year,
+      cars."fuelType",
+      JSON_BUILD_OBJECT(
+        'general', AVG("Rating".general),
+        'maintenance', AVG("Rating".maintenance),
+        'drivability', AVG("Rating".drivability),
+        'comfort', AVG("Rating".comfort),
+        'consumption', AVG("Rating".consumption)
+        ) as rating
+    FROM cars 
+    JOIN "Rating"
+    ON cars.id = "Rating".car_id
+    GROUP BY cars.id
+    LIMIT ${take}`;
+}
+
 export type CreateCarsParams = Omit<Car, "id" | "createdAt" | "updatedAt">;
 async function create(data: CreateCarsParams) {
   return prisma.car.create({
@@ -66,5 +104,6 @@ export const carsRepository = {
   findByYear,
   findYearsByManufactureId,
   findByManufactureIdAndYear,
+  findTopReviewed,
   create,
 };
