@@ -1,3 +1,4 @@
+import { error } from "console";
 import { notFoundError } from "../errors/not-found-error";
 import {
   CreateReviewParams,
@@ -5,10 +6,28 @@ import {
 } from "../repositories/reviews-repository";
 import { carsService } from "./cars-service";
 import { userService } from "./users-service";
+import { ratingExistsError } from "../errors/rating-error";
+import { reviewWithoutTagsError } from "../errors/tags-error";
+import { tagsService } from "./tags-service";
 
 async function create(userId: string, data: CreateReviewParams) {
   const car = carsService.findById(data.carId);
   if (!car) throw notFoundError("car");
+
+  const lastReview = await reviewsRepository.findByUserIdAndCarId(
+    userId,
+    data.carId
+  );
+
+  console.log(lastReview);
+
+  if (lastReview && !lastReview.Rating && data.rating) {
+    throw ratingExistsError();
+  }
+
+  if (lastReview && data.tags.length < 1) throw reviewWithoutTagsError();
+
+  await tagsService.findManyByIdList(data.tags);
 
   return await reviewsRepository.create(userId, data);
 }
