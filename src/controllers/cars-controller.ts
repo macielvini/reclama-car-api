@@ -61,3 +61,14 @@ export async function findCarsYearsByManufactureId(
     errorHandler(req, res, error);
   }
 }
+
+export async function findTopRatedCars(req: Request, res: Response) {
+  const take = parseInt(req.query.take as string);
+
+  try {
+    const data = await carsService.findTopReviewed(take);
+    res.send(data);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+}

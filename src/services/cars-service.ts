@@ -27,6 +27,10 @@ async function findByManufactureIdAndYear(id: string, year: number) {
   return await carsRepository.findByManufactureIdAndYear(id, year);
 }
 
+async function findTopReviewed(take?: number) {
+  return await carsRepository.findTopReviewed(take);
+}
+
 async function validateCarId(id: string) {
   const data = await carsRepository.findById(id);
   if (!data) throw notFoundError("car");
@@ -41,4 +45,5 @@ export const carsService = {
   findYearsByManufactureId,
   findByManufactureIdAndYear,
   validateCarId,
+  findTopReviewed,
 };

@@ -110,6 +110,7 @@ async function findByUserIdAndCarId(userId: string, carId: string) {
     where: {
       userId: userId,
       car: { id: carId },
+      AND: { Rating: { id: { not: "" } } },
     },
     include: {
       _count: { select: { Reaction: true } },

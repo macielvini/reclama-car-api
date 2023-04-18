@@ -1,10 +1,14 @@
 import { Router } from "express";
-import { findAllManufactures } from "../controllers/manufactures-controller";
+import {
+  findAllManufactures,
+  findTopRatedManufactures,
+} from "../controllers/manufactures-controller";
 
 const manufactureRouter = Router();
 
 manufactureRouter
-  .get("/:id", findAllManufactures)
-  .get("/", findAllManufactures);
+  .get("/top", findTopRatedManufactures)
+  .get("/", findAllManufactures)
+  .get("/:id", findAllManufactures);
 
 export { manufactureRouter };
