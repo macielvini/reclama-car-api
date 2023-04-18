@@ -7,12 +7,13 @@ const prisma = new PrismaClient();
 export async function cleanDb() {
   await Promise.all([
     prisma.session.deleteMany(),
-    prisma.user.deleteMany(),
     prisma.tagsOnReviews.deleteMany(),
-    prisma.tag.deleteMany(),
+    prisma.rating.deleteMany(),
     prisma.review.deleteMany(),
+    prisma.tag.deleteMany(),
     prisma.car.deleteMany(),
     prisma.manufacture.deleteMany(),
+    prisma.user.deleteMany(),
   ]);
 }
 
@@ -32,6 +33,28 @@ async function main() {
       image:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Fiat_logo.svg/2560px-Fiat_logo.svg.png",
       name: "Fiat",
+    },
+  });
+
+  const hyundai = await prisma.manufacture.create({
+    data: {
+      image:
+        "https://logodownload.org/wp-content/uploads/2014/05/hyundai-logo.png",
+      name: "Hyundai",
+    },
+  });
+
+  const toyota = await prisma.manufacture.create({
+    data: {
+      image: "https://assets.stickpng.com/images/5ec3e1ee58550c0004427739.png",
+      name: "Toyota",
+    },
+  });
+
+  const honda = await prisma.manufacture.create({
+    data: {
+      image: "https://www.pngmart.com/files/1/Honda-Logo-PNG.png",
+      name: "Honda",
     },
   });
 
@@ -59,7 +82,43 @@ async function main() {
     },
   });
 
-  const tags = await prisma.tag.createMany({
+  const civic = await prisma.car.create({
+    data: {
+      engineSize: "1.8",
+      fuelType: "Flex",
+      image:
+        "https://quatrorodas.abril.com.br/wp-content/uploads/2021/04/2022-honda-civic-touring.jpg",
+      model: "Civic Touring Turbo",
+      year: 2022,
+      manufactureId: honda.id,
+    },
+  });
+
+  const corolla = await prisma.car.create({
+    data: {
+      engineSize: "1.8",
+      fuelType: "Gasolina",
+      image:
+        "https://s1.cdn.autoevolution.com/images/gallery/TOYOTA-Corolla--US--673_39.jpg",
+      model: "Corolla XEi 16v",
+      year: 2002,
+      manufactureId: toyota.id,
+    },
+  });
+
+  const hb20 = await prisma.car.create({
+    data: {
+      engineSize: "1.0",
+      fuelType: "Flex",
+      image:
+        "https://quatrorodas.abril.com.br/wp-content/uploads/2022/07/NOVO-HB20-7.jpg",
+      model: "HB20",
+      year: 2023,
+      manufactureId: hyundai.id,
+    },
+  });
+
+  await prisma.tag.createMany({
     data: [
       { color: "#3ED926", name: "recomendação" },
       { color: "#FD5824", name: "reclamação" },
@@ -89,6 +148,41 @@ async function main() {
     image: adminUser.image,
     password: "useradmin",
     role: adminUser.role,
+  });
+
+  await prisma.review.createMany({
+    data: [
+      {
+        carId: onix.id,
+        text: "Review do Onix",
+        title: "Onix",
+        userId: adminUser.id,
+      },
+      {
+        carId: fastback.id,
+        text: "Review do Fastback",
+        title: "Fastback",
+        userId: adminUser.id,
+      },
+      {
+        carId: civic.id,
+        text: "Review do Civic",
+        title: "Civic",
+        userId: adminUser.id,
+      },
+      {
+        carId: corolla.id,
+        text: "Review do Corolla",
+        title: "Corolla",
+        userId: adminUser.id,
+      },
+      {
+        carId: hb20.id,
+        text: "Review do HB20",
+        title: "HB20",
+        userId: adminUser.id,
+      },
+    ],
   });
 }
 
