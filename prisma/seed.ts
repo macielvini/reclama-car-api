@@ -46,7 +46,7 @@ async function main() {
 
   const toyota = await prisma.manufacture.create({
     data: {
-      image: "https://assets.stickpng.com/images/5ec3e1ee58550c0004427739.png",
+      image: "https://logospng.org/download/toyota/logo-toyota-4096.png",
       name: "Toyota",
     },
   });

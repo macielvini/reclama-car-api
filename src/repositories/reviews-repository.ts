@@ -156,12 +156,20 @@ async function findTrending(take: number, skip: number, userId?: string) {
   const last15days = dayjs().subtract(15, "d").toDate();
 
   if (userId === undefined) userId = "";
-  console.log(userId);
 
   const data = await prisma.review.findMany({
     where: {
-      createdAt: { gte: last30days },
-      AND: { Reaction: { some: { createdAt: { gte: last15days } } } },
+      OR: [
+        {
+          AND: [
+            { Reaction: { some: { createdAt: { gte: last15days } } } },
+            { createdAt: { gte: last30days } },
+          ],
+        },
+        {
+          OR: { createdAt: { gte: last30days } },
+        },
+      ],
     },
     include: {
       _count: { select: { Reaction: true } },

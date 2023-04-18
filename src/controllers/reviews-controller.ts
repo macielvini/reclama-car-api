@@ -47,21 +47,12 @@ export async function findReviewByUserIdAndCarId(
 }
 
 export async function findTrendingReviews(req: Request, res: Response) {
-  const { take, skip } = req.query;
+  const take = parseInt(req.query.take as string) || 10;
+  const skip = parseInt(req.query.skip as string) || 0;
   const userId = "";
 
   try {
-    if (!take || !skip)
-      throw {
-        status: httpStatus.BAD_REQUEST,
-        message: "Please, specify 'take' and 'skip' properties on query",
-      };
-
-    const data = await reviewsService.findTrending(
-      parseInt(take as string),
-      parseInt(skip as string),
-      userId
-    );
+    const data = await reviewsService.findTrending(take, skip, userId);
     res.send(data);
   } catch (error) {
     errorHandler(req, res, error);
