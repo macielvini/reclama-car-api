@@ -77,16 +77,23 @@ async function findTopReviewed(take?: number): Promise<CarAvgRatings[]> {
       cars.year,
       cars."fuelType",
       JSON_BUILD_OBJECT(
-        'general', AVG("Rating".general),
         'maintenance', AVG("Rating".maintenance),
         'drivability', AVG("Rating".drivability),
         'comfort', AVG("Rating".comfort),
-        'consumption', AVG("Rating".consumption)
-        ) as rating
+        'consumption', AVG("Rating".consumption),
+        'general', AVG("Rating".general)
+        ) as rating,
+      JSON_BUILD_OBJECT(
+        'id', manufactures.id,
+        'name', manufactures.name,
+        'image', manufactures.image
+      ) as manufacture
     FROM cars 
     JOIN "Rating"
     ON cars.id = "Rating".car_id
-    GROUP BY cars.id
+    JOIN manufactures
+    ON cars.manufacture_id = manufactures.id
+    GROUP BY cars.id, manufactures.id
     LIMIT ${take}`;
 }
 
