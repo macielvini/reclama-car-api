@@ -62,6 +62,7 @@ async function findAll() {
           general: true,
         },
       },
+      user: { select: { name: true, id: true, image: true } },
     },
   });
 
@@ -96,6 +97,7 @@ async function findAllByUserId(id: string) {
           general: true,
         },
       },
+      user: { select: { name: true, id: true, image: true } },
     },
     orderBy: {
       createdAt: "desc",
@@ -129,6 +131,7 @@ async function findByUserIdAndCarId(userId: string, carId: string) {
           general: true,
         },
       },
+      user: { select: { name: true, id: true, image: true } },
     },
     orderBy: {
       createdAt: "desc",
@@ -188,6 +191,7 @@ async function findTrending(take: number, skip: number, userId?: string) {
           general: true,
         },
       },
+      user: { select: { name: true, id: true, image: true } },
     },
     orderBy: { Reaction: { _count: "desc" } },
     take: take,
@@ -197,11 +201,33 @@ async function findTrending(take: number, skip: number, userId?: string) {
   return reviewsSanitizer(data);
 }
 
-async function findTopReactions() {
-  return prisma.review.findMany({
-    include: { _count: { select: { Reaction: true } } },
+async function findTopReactions(userId?: string) {
+  if (userId === undefined) userId = "";
+
+  const data = await prisma.review.findMany({
+    include: {
+      _count: { select: { Reaction: true } },
+      car: { include: { manufacture: true } },
+      TagsOnReviews: { select: { tag: true } },
+      Reaction: {
+        where: { user: { id: { equals: userId } } },
+        take: 1,
+      },
+      Rating: {
+        select: {
+          maintenance: true,
+          comfort: true,
+          drivability: true,
+          consumption: true,
+          general: true,
+        },
+      },
+      user: { select: { name: true, id: true, image: true } },
+    },
     orderBy: { Reaction: { _count: "desc" } },
   });
+
+  return reviewsSanitizer(data);
 }
 
 type FullReview = Review & {
