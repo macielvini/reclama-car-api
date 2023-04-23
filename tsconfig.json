@@ -7,7 +7,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "baseUrl": "src",
+    "moduleResolution": "node",
     "rootDirs": ["src", "tests"]
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
+  "ts-node": {
+    "esm": true
+  }
 }
